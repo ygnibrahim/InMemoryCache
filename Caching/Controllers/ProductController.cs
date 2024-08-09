@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Caching.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Caching.Controllers
@@ -26,8 +27,13 @@ namespace Caching.Controllers
                 _memoryCache.Set("callback", $"{key}->{value} => sebep:{reason}");
             });
 
-
             _memoryCache.Set<string>("zaman", DateTime.Now.ToString(), options);
+
+
+            Product p = new Product { Id = 1, Name = "kalem", Price = 200 };
+
+            _memoryCache.Set<Product>("product:1", p);
+
 
 
             return View();
@@ -38,6 +44,8 @@ namespace Caching.Controllers
 
             _memoryCache.TryGetValue("zaman", out string zamancache);
             _memoryCache.TryGetValue("callback", out string callback);
+
+            ViewBag.product = _memoryCache.Get<Product>("product:1");
 
             ViewBag.zaman = zamancache;
             ViewBag.callback = callback;
